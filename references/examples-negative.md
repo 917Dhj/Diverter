@@ -17,6 +17,10 @@ These are examples that should usually not trigger a subagent suggestion.
 8. `就修这个单文件的小 bug，不要并行拆分。`
 9. `先回答我这个关键问题：这个接口到底返回什么？`
 10. `delegation_context: delegated-subagent; parent approval already completed; goal: 按这个 handoff 抽取候选文献。`
+11. `Optimize this CLI parser. It feels slow on large files.`
+12. `Review this small README typo fix.`
+13. `Add some tests here, not sure what exactly.`
+14. `Make this secure.`
 
 Why these are negative examples:
 
@@ -25,6 +29,7 @@ Why these are negative examples:
 - the request is blocked on one immediate answer
 - the user has explicitly opted out
 - delegated subagent handoffs already passed parent approval and should execute, not suggest another lineup
+- Web performance specialists should not be used for non-Web performance tasks, write-capable testing should not start from unclear behavior, and vague security wording should be clarified before suggesting a security lineup
 
 Borderline note:
 

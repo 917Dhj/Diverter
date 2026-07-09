@@ -30,6 +30,7 @@ If any of these pieces is missing, the suggestion is incomplete.
 - Use existing roles only.
 - Mention every recommended role by its exact role name.
 - If a capability was dropped because its role is unavailable, mention the gap briefly.
+- Add specialist roles only when the prompt has an explicit signal for that specialty; ordinary PR review should not inflate into every quality role.
 - State the work mode explicitly using one of: `read-only`, `mixed`, `write-capable`.
 - End with a question, not a statement.
 - Ask for permission before any spawn.

@@ -43,6 +43,11 @@ Strong triggers:
 - research tasks with independent lines of inquiry
 - planning tasks that split into independent subtasks
 - mixed-language prompts that combine code mapping, docs verification, and risk review
+- security-sensitive code review involving auth, authorization, secrets, user input, webhooks, dependencies, or LLM/tool permissions
+- test coverage analysis, test strategy, or regression test planning
+- targeted test implementation that should start with read-only behavior mapping
+- Web performance audit for frontend routes, Core Web Vitals, Lighthouse, LCP, INP, CLS, loading, rendering, or network behavior
+- pre-ship quality gate across review, tests, security, and release risk
 
 Typical request shapes:
 - "review this PR for bugs, security, maintainability, and tests"
@@ -63,6 +68,10 @@ Hard stop cases:
 - tasks blocked on one immediate critical-path answer
 - wording-only edits
 - explicit user opt-out from subagents
+- generic small PR review or style-only review that does not need specialist lanes
+- Web performance specialist work for non-Web performance tasks
+- write-capable test automation when the target behavior is ambiguous
+- vague security requests without a concrete artifact, flow, or trust boundary
 
 Typical non-trigger cases:
 - "delegation_context: delegated-subagent"
@@ -96,12 +105,15 @@ Bundled capability map:
 | Capability | Preferred bundled role | Work mode |
 | --- | --- | --- |
 | code mapping | `code-mapper` | read-only |
-| risk review | `reviewer` | read-only |
+| code review | `reviewer` | read-only |
+| security audit | `security-auditor` | read-only |
 | docs/API verification | `docs-researcher` | read-only |
 | search | `search-specialist` | read-only |
 | synthesis | `knowledge-synthesizer` | read-only |
 | planning | `task-distributor` | read-only |
+| test strategy | `test-engineer` | read-only |
 | test automation | `test-automator` | write-capable |
+| Web performance audit | `web-performance-auditor` | read-only |
 
 Availability rules:
 - recommend only roles that are explicitly available in the current Codex session
@@ -116,20 +128,35 @@ Selection guidance:
 
 | Task shape | Capability lineup | Preferred role lineup when available | Mode |
 | --- | --- | --- | --- |
-| Branch or PR review | risk review + code mapping | `reviewer + code-mapper` | read-only |
-| Review with docs/API assumptions | risk review + code mapping + docs/API verification | `reviewer + code-mapper + docs-researcher` | read-only |
+| General branch or PR review | code review + code mapping | `reviewer + code-mapper` | read-only |
+| Review with docs/API assumptions | code review + code mapping + docs/API verification | `reviewer + code-mapper + docs-researcher` | read-only |
+| Security-sensitive review | security audit + code mapping + code review | `security-auditor + code-mapper + reviewer` | read-only |
+| Auth / permission / token flow review | security audit + code mapping | `security-auditor + code-mapper` | read-only |
+| LLM / agent tool safety review | security audit + code mapping + docs/API verification | `security-auditor + code-mapper + docs-researcher` | read-only |
+| Test coverage analysis | test strategy + code mapping | `test-engineer + code-mapper` | read-only |
+| Add targeted regression tests | test strategy + test automation + code mapping | `test-engineer + test-automator + code-mapper` | mixed |
+| Web performance source audit | Web performance audit + code mapping | `web-performance-auditor + code-mapper` | read-only |
+| Web performance audit with supplied metrics | Web performance audit | `web-performance-auditor` | read-only |
 | Codepath plus docs/API verification | code mapping + docs/API verification | `code-mapper + docs-researcher` | read-only |
 | Option research | search + synthesis | `search-specialist + knowledge-synthesizer` | read-only |
 | Broad planning | planning + code mapping | `task-distributor + code-mapper` | read-only |
 | Codebase mapping | code mapping + search | `code-mapper + search-specialist` | read-only |
-| Regression-risk evidence | code mapping + risk review + search | `code-mapper + reviewer + search-specialist` | read-only |
-| Exploration before test coverage | code mapping + risk review + test automation | `code-mapper + reviewer + test-automator` | mixed |
-| Meta prompt asking for a default lineup | code mapping + risk review | `code-mapper + reviewer` | read-only |
+| Regression-risk evidence | code mapping + code review + search | `code-mapper + reviewer + search-specialist` | read-only |
+| Pre-ship quality gate | code review + security audit + test strategy + code mapping | `reviewer + security-auditor + test-engineer + code-mapper` | read-only |
+| Meta prompt asking for a default lineup | code mapping + code review | `code-mapper + reviewer` | read-only |
 
 Role-count rules:
 - default to 1-3 roles
 - use 4 roles only when the task genuinely has four distinct lanes and all four roles are available
 - never exceed 4 roles
+
+Specialist compression rules:
+- ordinary PR review stays `reviewer + code-mapper`
+- add `security-auditor` only when the task has a concrete security boundary or explicit security audit request
+- add `test-engineer` only when the task asks about tests, coverage, proof, or test strategy
+- add `test-automator` only when test writing or updating is explicitly requested and the scope is clear enough to be safe
+- add `web-performance-auditor` only for Web apps, Web routes, Web pages, Web components, or Web performance artifacts
+- if more than 4 roles are triggered, keep the central risk specialist and `code-mapper`, then drop non-core roles
 
 ## Suggestion Contract
 

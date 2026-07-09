@@ -7,24 +7,35 @@ Choose capabilities first. Then keep only the roles that are available in the cu
 | Capability | Preferred bundled role | Use when | Missing-role behavior |
 | --- | --- | --- | --- |
 | code mapping | `code-mapper` | tracing code paths, ownership, or execution flow | Drop the capability or handle mapping in the main thread after approval. |
-| risk review | `reviewer` | finding correctness, security, test, or regression risks | Drop the capability if another role still covers a useful lane. |
+| code review | `reviewer` | general PR review, correctness, maintainability, contracts, regressions, and light security/test risk | Handle in the main thread or use another explicit review role if one is available. |
+| security audit | `security-auditor` | auth, authorization, secrets, user input, webhooks, SSRF, dependencies, LLM/tool permissions, or exploitable vulnerability risk | Mention that security audit is not delegated; do not substitute a generic reviewer when security is central. |
 | docs/API verification | `docs-researcher` | verifying documented API/framework behavior | Mention that docs verification is not delegated; do not substitute an unknown role. |
 | search | `search-specialist` | gathering high-signal codebase or external evidence | Drop if code mapping or docs verification already covers the task. |
 | synthesis | `knowledge-synthesizer` | consolidating multiple research outputs | Synthesize in the main thread after other agents return. |
 | planning | `task-distributor` | decomposing broad work into bounded subtasks | Plan in the main thread if no planning role is available. |
-| test automation | `test-automator` | adding or updating targeted regression coverage | Do not suggest write-capable delegation unless this role or another explicit test role is available. |
+| test strategy | `test-engineer` | coverage gaps, test plan, test level choice, or Prove-It regression planning | Handle test strategy in the main thread; do not jump directly to write-capable test automation. |
+| test automation | `test-automator` | writing or updating targeted tests after scope is clear | Do not suggest write-capable testing if unavailable. |
+| Web performance audit | `web-performance-auditor` | Core Web Vitals, Lighthouse, frontend route/component performance, loading, rendering, network, caching, images, fonts, or bundle risks | Handle in the main thread or skip the specialist if the task is not Web-specific. |
 
 ## Common Capability Lineups
 
 | Scenario | Capability lineup | Preferred roles when available | Work mode |
 | --- | --- | --- | --- |
-| Multi-axis PR review | risk review + code mapping + docs/API verification | `reviewer` + `code-mapper` + `docs-researcher` | read-only |
+| General PR review | code review + code mapping | `reviewer` + `code-mapper` | read-only |
+| Multi-axis PR review with docs/API assumptions | code review + code mapping + docs/API verification | `reviewer` + `code-mapper` + `docs-researcher` | read-only |
+| Security-sensitive review | security audit + code mapping + code review | `security-auditor` + `code-mapper` + `reviewer` | read-only |
+| Auth / permission / token flow review | security audit + code mapping | `security-auditor` + `code-mapper` | read-only |
+| LLM / agent tool safety review | security audit + code mapping + docs/API verification | `security-auditor` + `code-mapper` + `docs-researcher` | read-only |
+| Test coverage analysis | test strategy + code mapping | `test-engineer` + `code-mapper` | read-only |
+| Add targeted regression tests | test strategy + test automation + code mapping | `test-engineer` + `test-automator` + `code-mapper` | mixed |
+| Web performance source audit | Web performance audit + code mapping | `web-performance-auditor` + `code-mapper` | read-only |
+| Web performance audit with artifacts | Web performance audit | `web-performance-auditor` | read-only |
 | Read-heavy repo exploration | code mapping + search | `code-mapper` + `search-specialist` | read-only |
 | Docs + codepath verification | docs/API verification + code mapping | `docs-researcher` + `code-mapper` | read-only |
 | Research + synthesis | search + synthesis | `search-specialist` + `knowledge-synthesizer` | read-only |
 | Planning a broad change | planning + code mapping | `task-distributor` + `code-mapper` | read-only |
-| Exploration before test coverage | code mapping + risk review + test automation | `code-mapper` + `reviewer` + `test-automator` | mixed |
-| Coverage-focused follow-up | risk review + test automation | `reviewer` + `test-automator` | write-capable |
+| Coverage-focused follow-up | code review + test automation | `reviewer` + `test-automator` | write-capable |
+| Pre-ship quality gate | code review + security audit + test strategy + code mapping | `reviewer` + `security-auditor` + `test-engineer` + `code-mapper` | read-only |
 
 ## Compression Rules
 
@@ -34,6 +45,13 @@ Choose capabilities first. Then keep only the roles that are available in the cu
 - If a missing capability is important, mention that the main thread can cover it after approval.
 - If no relevant roles are available, stay silent during implicit checks and continue normally.
 - Never recommend 4 roles only to sound thorough.
+- Ordinary PR review defaults to `reviewer + code-mapper`; do not add every quality specialist.
+- Add `security-auditor` only for concrete security boundaries or explicit security audit requests.
+- Add `test-engineer` only for test strategy, coverage gaps, proof, or regression planning.
+- Add `test-automator` only when the user explicitly asks for test writes and the behavior scope is clear.
+- Add `web-performance-auditor` only for Web-facing performance work.
+- For non-Web performance, use `code-mapper + reviewer` only if the task is multi-lane.
+- If more than 4 roles are triggered, keep the central specialist and `code-mapper`; drop non-core roles.
 
 ## Write-Safety Rules
 

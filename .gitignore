@@ -52,5 +52,6 @@ temp/
 *.tmp
 *.log
 
-# Local evaluation materials and outputs
-evals/
+# Local evaluation outputs
+evals/results/
+docs/

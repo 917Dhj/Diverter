@@ -219,17 +219,20 @@ python3 "${AGENTS_HOME:-$HOME/.agents}/skills/cast-subagents/scripts/install-age
 
 ### 内置角色
 
-`agents/categories/` 目录中包含七个专业角色：
+`agents/categories/` 目录中包含十个专业角色：
 
 | 角色 | 功能 |
 |---|---|
 | `code-mapper` | 追踪代码执行路径，定位文件归属关系 |
-| `reviewer` | 识别变更中的正确性、安全和测试风险 |
+| `reviewer` | 以 Staff Engineer 风格审查正确性、契约、回归和可维护性风险 |
+| `security-auditor` | 审查信任边界、认证、授权、密钥、用户输入、依赖和 LLM/tool 权限风险 |
+| `test-engineer` | 只读分析测试策略、覆盖缺口、测试层级和 Prove-It 回归测试计划 |
+| `test-automator` | 在范围清楚后添加有针对性的自动化回归测试 |
 | `docs-researcher` | 验证 API 保证和文档假设 |
 | `search-specialist` | 在代码或外部资源中快速收集高信号证据 |
 | `knowledge-synthesizer` | 将研究结果整合为简洁、可操作的总结 |
 | `task-distributor` | 将宏观目标拆分为有边界、独立的子任务 |
-| `test-automator` | 为已识别的风险区域添加最小回归测试覆盖 |
+| `web-performance-auditor` | 审计 Web 性能、Core Web Vitals、加载、渲染和网络风险，不伪造指标 |
 
 该技能先选择所需能力，然后映射到 Codex 环境中实际可用的角色。如果首选角色缺失，技能会明确说明，而非悄悄替换。
 
@@ -237,13 +240,14 @@ python3 "${AGENTS_HOME:-$HOME/.agents}/skills/cast-subagents/scripts/install-age
 
 | 任务形态 | 推荐阵容 | 工作模式 |
 |---|---|---|
-| 多维度 PR 审查 | `reviewer + code-mapper + docs-researcher` | `read-only` |
+| 通用 PR 审查 | `reviewer + code-mapper` | `read-only` |
+| 安全敏感审查 | `security-auditor + code-mapper + reviewer` | `read-only` |
+| 测试覆盖分析 | `test-engineer + code-mapper` | `read-only` |
+| 有针对性的回归测试 | `test-engineer + test-automator + code-mapper` | `mixed` |
+| Web 性能审计 | `web-performance-auditor + code-mapper` | `read-only` |
+| 发布前质量门 | `reviewer + security-auditor + test-engineer + code-mapper` | `read-only` |
 | 代码路径加文档/API 验证 | `code-mapper + docs-researcher` | `read-only` |
 | 方案研究与权衡综合 | `search-specialist + knowledge-synthesizer` | `read-only` |
-| 以读取为主的代码库探索 | `code-mapper + search-specialist` | `read-only` |
-| 回归风险证据收集 | `code-mapper + reviewer + search-specialist` | `read-only` |
-| 有界修复前的探索 | `code-mapper + reviewer + worker` | `mixed` |
-| 覆盖导向的后续跟进 | `reviewer + test-automator` | `write-capable` |
 
 上限是四个角色。如果一个任务看起来需要更多角色，cast-subagents 要么压缩阵容，要么保持安静，而不是将其充数。
 
@@ -335,6 +339,8 @@ cast-subagents/
 本项目的"始终在线门控"模式与 session-bootstrap 思路参考自 [obra/superpowers](https://github.com/obra/superpowers)。"通过 session bootstrap 机制确保门控在每个任务前运行"这一思路直接来自对该项目的学习。
 
 仓库内置的角色包是从 [VoltAgent/awesome-codex-subagents](https://github.com/VoltAgent/awesome-codex-subagents) 中整理出来的一小部分精选角色。它只包含 cast-subagents 常用推荐的角色，并围绕本 skill 的决策规则做了轻量组织，并不是对该集合的完整镜像。
+
+Staff Engineer 风格审查、安全审计、测试策略和 Web 性能审计的角色设计参考了 [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills)。cast-subagents 中的版本已按 Codex subagent TOML 角色格式和本项目的 advisory lineup-selection 模型重新表达。
 
 ## 🤝 贡献与许可
 

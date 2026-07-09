@@ -15,6 +15,12 @@ These are examples that should usually trigger a subagent suggestion.
 6. `先帮我查清楚代码路径，再去核对官方文档里这个 API 的行为。`
 7. `这个任务需要先做一轮资料调研，再把结论总结成一个可执行的方案。`
 8. `我们先把仓库里相关模块的边界摸清楚，再决定应该怎么改。`
+9. `Review this auth refactor for permission bypasses, token handling issues, and missing server-side checks.`
+10. `Check whether this agent tool integration can leak secrets or let a subagent perform destructive actions without approval.`
+11. `Look at the checkout flow and tell me what tests are missing before we change anything.`
+12. `Add regression tests for the settings save bug, but first identify the exact behavior boundary.`
+13. `Audit the Next.js landing page for LCP, INP, CLS, image loading, and unnecessary client-side rendering.`
+14. `Before we ship this branch, check code quality, security risk, and missing tests.`
 
 Why these are positive examples:
 
@@ -22,3 +28,4 @@ Why these are positive examples:
 - they are mostly read-heavy before any writes
 - they benefit from specialist viewpoints or parallel evidence gathering
 - a 1-4 role lineup can be justified without inventing extra agents
+- they contain explicit security, test strategy, Web performance, or pre-ship quality signals that justify specialist roles without making ordinary PR review noisy

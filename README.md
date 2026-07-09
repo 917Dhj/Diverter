@@ -225,17 +225,20 @@ The Chinese examples above are included intentionally. cast-subagents matches th
 
 ### Bundled roles
 
-Seven specialized roles are included in the `agents/categories/` directory:
+Ten specialized roles are included in the `agents/categories/` directory:
 
 | Role | What it does |
 |---|---|
 | `code-mapper` | Traces execution paths and maps file ownership across the codebase |
-| `reviewer` | Identifies correctness, security, and test risks in a change |
+| `reviewer` | Performs Staff Engineer-style code review across correctness, contracts, regressions, and maintainability |
+| `security-auditor` | Reviews trust boundaries, auth, authorization, secrets, user input, dependencies, and LLM/tool permission risks |
+| `test-engineer` | Analyzes test strategy, coverage gaps, test levels, and Prove-It regression plans without editing files |
+| `test-automator` | Adds targeted automated regression coverage after scope is clear |
 | `docs-researcher` | Verifies API guarantees and documentation assumptions |
 | `search-specialist` | Gathers high-signal evidence quickly across code or external sources |
 | `knowledge-synthesizer` | Consolidates research findings into a concise, actionable summary |
 | `task-distributor` | Structures a broad goal into bounded, independent subtasks |
-| `test-automator` | Adds minimal regression coverage for identified risk areas |
+| `web-performance-auditor` | Audits Web performance, Core Web Vitals, loading, rendering, and network risks without fabricating metrics |
 
 The skill selects capabilities first, then maps them to the roles that are actually available in your Codex environment. If a preferred role is missing, the skill says so explicitly rather than silently substituting.
 
@@ -243,13 +246,14 @@ The skill selects capabilities first, then maps them to the roles that are actua
 
 | Task shape | Recommended lineup | Work mode |
 |---|---|---|
-| Multi-axis PR review | `reviewer + code-mapper + docs-researcher` | `read-only` |
+| General PR review | `reviewer + code-mapper` | `read-only` |
+| Security-sensitive review | `security-auditor + code-mapper + reviewer` | `read-only` |
+| Test coverage analysis | `test-engineer + code-mapper` | `read-only` |
+| Targeted regression tests | `test-engineer + test-automator + code-mapper` | `mixed` |
+| Web performance audit | `web-performance-auditor + code-mapper` | `read-only` |
+| Pre-ship quality gate | `reviewer + security-auditor + test-engineer + code-mapper` | `read-only` |
 | Codepath plus docs/API verification | `code-mapper + docs-researcher` | `read-only` |
 | Option research and tradeoff synthesis | `search-specialist + knowledge-synthesizer` | `read-only` |
-| Read-heavy codebase exploration | `code-mapper + search-specialist` | `read-only` |
-| Regression-risk evidence gathering | `code-mapper + reviewer + search-specialist` | `read-only` |
-| Exploration before a bounded fix | `code-mapper + reviewer + worker` | `mixed` |
-| Coverage-focused follow-up | `reviewer + test-automator` | `write-capable` |
 
 The cap is four roles. If a task seems to need more, cast-subagents either compresses the lineup or stays silent rather than padding it out.
 
@@ -341,6 +345,8 @@ The `references/` directory is where substantive changes go. The `SKILL.md` load
 The always-on gate pattern and session-bootstrap approach in this project were inspired by [obra/superpowers](https://github.com/obra/superpowers). The idea of using a session-bootstrap mechanism to ensure a gate runs before every task came directly from studying that project.
 
 The bundled role pack is a small, curated subset adapted from [VoltAgent/awesome-codex-subagents](https://github.com/VoltAgent/awesome-codex-subagents). It includes only the roles that cast-subagents commonly recommends, with light organization around this skill's decision rules rather than a full mirror of that collection.
+
+The role design for Staff Engineer review, security auditing, test strategy, and Web performance auditing was informed by [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills). The cast-subagents versions are rewritten for Codex subagent TOML roles and this project's advisory lineup-selection model.
 
 ## 🤝 Contributing & License
 
