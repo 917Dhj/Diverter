@@ -31,3 +31,7 @@ _Avoid_: Role order, priority
 **Selection Intent**:
 The set of Bundled Subagents the user means to install, interpreted by the Agent from structured or free-form input. The Agent asks again only when that intent is genuinely unclear; there is no user-facing input grammar.
 _Avoid_: Selection syntax, parsed command
+
+**Routing Smoke Test**:
+The release check that starts one Terra, one Luna, and one Sol Bundled Subagent and confirms the requested model, reasoning effort, sandbox, and successful return.
+_Avoid_: Quality evaluation, benchmark
