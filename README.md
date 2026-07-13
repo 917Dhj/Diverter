@@ -107,75 +107,66 @@ Use repeated `--role` arguments to choose a different set. For project-only inst
 
 **4. Restart Codex** so the skill and AGENTS rules are loaded.
 
-## ⚙️ How It Works
+## 🎭 Roles & Lineups
 
-cast-subagents has two parts that work in sequence:
+### Bundled roles
 
-- **The AGENTS.md gate** is the always-on trigger. It adds a short advisory block to your Codex `AGENTS.md` that tells Codex to check for a subagent-worthy task before starting any non-trivial work.
-- **`SKILL.md`** is the advisor. When the gate determines a suggestion is warranted, the skill does the detailed work: classifies the task shape, selects a lineup of 1–4 roles, determines the work mode, and writes the suggestion message. Then it stops and waits.
+Ten specialized roles are included in the `agents/categories/` directory. Their installation numbers are stable; future roles receive new numbers rather than reusing existing ones.
 
-Think of them as gatekeeper and advisor: the gate decides whether to escalate; the skill decides what to recommend.
+| # | Role | GPT-5.6 model | Reasoning effort | What it does |
+|---:|---|---|---|---|
+| 1 | `code-mapper` | `gpt-5.6-terra` | `medium` | Traces code paths, files, symbols, and ownership boundaries |
+| 2 | `search-specialist` | `gpt-5.6-luna` | `medium` | Gathers focused repository or external evidence |
+| 3 | `docs-researcher` | `gpt-5.6-luna` | `high` | Verifies official APIs, versions, and documented guarantees |
+| 4 | `knowledge-synthesizer` | `gpt-5.6-luna` | `high` | Reconciles long or conflicting findings without inventing facts |
+| 5 | `task-distributor` | `gpt-5.6-sol` | `medium` | Splits broad goals into bounded work packages |
+| 6 | `reviewer` | `gpt-5.6-sol` | `medium` | Reviews correctness, regressions, contracts, and maintainability |
+| 7 | `security-auditor` | `gpt-5.6-sol` | `high` | Audits trust boundaries, auth, secrets, and agent-tool safety |
+| 8 | `test-engineer` | `gpt-5.6-luna` | `high` | Designs minimal test coverage for behavior and risk |
+| 9 | `test-automator` | `gpt-5.6-terra` | `xhigh` | Adds bounded regression tests after behavior is clear |
+| 10 | `web-performance-auditor` | `gpt-5.6-luna` | `high` | Audits Web performance evidence and Core Web Vitals risks |
 
-```
-User sends task
-      │
-      ▼
-AGENTS.md gate checks task
-      │
-      ├── task is simple / single-lane / opted out
-      │         │
-      │         ▼
-      │     stay silent → Codex continues normally
-      │
-      └── task has independent lanes
-                │
-                ▼
-          cast-subagents skill
-                │
-                ▼
-          classify task shape
-          select lineup (1–4 roles)
-          choose work mode
-          write suggestion message
-                │
-                ▼
-          STOP — wait for approval
-                │
-      ┌─────────┴──────────┐
-      │                    │
-   declined             approved
-      │                    │
-      ▼                    ▼
-  continue in         delegate with
-  main thread         handoff schema
-```
+The recommended installation set is roles `1,3,6,7,8,9`. The agent-friendly installer offers this set, all roles, or any custom selection and warns before overwriting selected same-name files.
 
-### The Suggestion Contract
+The skill selects capabilities first, then maps them to the roles that are actually available in your Codex environment. If a preferred role is missing, the skill says so explicitly rather than silently substituting.
 
-Every suggestion covers four things in order: why the task could benefit from subagents, the exact lineup with a reason per role, the work mode, and a permission question matched to the risk of the work. The output is conversational rather than templated — the same four pieces, different wording each time.
+Specialist roles are not decorative. cast-subagents adds them only when the task contains a concrete independent security, test, performance, or release-risk signal.
 
-Hard constraints: exactly one lineup, no more than four roles, no task content before approval, no implication that delegation has already started. The suggestion always ends with a question.
+### Common lineups
 
-### After Approval
+| Task shape | Recommended lineup | Work mode |
+|---|---|---|
+| General PR review | `reviewer + code-mapper` | `read-only` |
+| Security-sensitive review | `security-auditor + code-mapper + reviewer` | `read-only` |
+| Test coverage analysis | `test-engineer + code-mapper` | `read-only` |
+| Targeted regression tests | `test-engineer + test-automator + code-mapper` | `mixed` |
+| Web performance audit | `web-performance-auditor + code-mapper` | `read-only` |
+| Pre-ship quality gate | `reviewer + security-auditor + test-engineer + code-mapper` | `read-only` |
+| Codepath plus docs/API verification | `code-mapper + docs-researcher` | `read-only` |
+| Option research and tradeoff synthesis | `search-specialist + knowledge-synthesizer` | `read-only` |
 
-Once you approve, each agent gets a structured handoff that includes the goal, success criteria, scope boundaries, relevant file paths, write policy, and a verifiable deliverable. Here's what a typical handoff looks like:
+Specialist examples:
 
-```text
-delegation_context: delegated-subagent; parent approval already completed; do not invoke cast-subagents or request another delegation approval; execute this handoff only
-goal: Map the affected code path for the settings save failure.
-success_criteria: Identify the real execution path, likely failure boundary,
-  and the files that own the behavior.
-scope_in: settings modal, client mutation, API route, response handling
-scope_out: unrelated settings pages, styling, copy updates
-relevant_paths: src/settings/, app/api/settings/, useSettingsForm
-constraints: read-only; no code edits; cite concrete files and symbols
-deliverable: concise summary with file references and one likely root cause
-verification: parent can trace the same path from your references
-write_policy: read-only
-open_questions: whether retries or optimistic updates affect the failure mode
-```
+| Task shape | Recommended lineup | Work mode |
+|---|---|---|
+| Auth / permission / token flow review | `security-auditor + code-mapper` | `read-only` |
+| LLM / agent tool safety review | `security-auditor + code-mapper + docs-researcher` | `read-only` |
+| Web performance audit with supplied metrics | `web-performance-auditor` | `read-only` |
+| Targeted regression tests | `test-engineer + test-automator + code-mapper` | `mixed` |
 
-No agent infers scope from context — everything is explicit. The full schema is in `references/handoff-schema.md`.
+The cap is four roles. If a task seems to need more, cast-subagents either compresses the lineup or stays silent rather than padding it out.
+
+These role names are compatible with VoltAgent/awesome-codex-subagents and similar community Codex subagent collections. If you use a custom role set, you can adapt `references/role-lineups.md` to add your own task shape mappings.
+
+## 🔄 Work Modes
+
+**`read-only`** — agents inspect, trace, and report. No files are written. This is the default for review, mapping, research, and verification tasks, and what cast-subagents defaults to when in doubt. Most suggestions use this mode.
+
+**`mixed`** — agents start with a read-only pass and pause before any writes. The skill confirms the exploration phase is complete before handing off to a write-capable agent. When you see `mixed` in a suggestion, it means: "we'll dig in first, and I'll check with you before anything changes."
+
+**`write-capable`** — agents may edit files within their assigned scope. cast-subagents uses this only for explicitly write-capable work. Test-writing tasks normally start as `mixed`: `test-engineer` and `code-mapper` clarify the behavior first, then `test-automator` writes targeted tests only when the scope is clear.
+
+The mode is always stated using one of these three exact labels — you won't see a suggestion without knowing which one applies.
 
 ## 🎯 Decision Rules
 
@@ -249,66 +240,75 @@ cast-subagents looks for two kinds of signals: core delegation signals, where wo
 
 The Chinese examples above are included intentionally. cast-subagents matches the user's language when writing suggestions; role names and work mode labels remain in English regardless of the prompt language.
 
-## 🎭 Roles & Lineups
+## ⚙️ How It Works
 
-### Bundled roles
+cast-subagents has two parts that work in sequence:
 
-Ten specialized roles are included in the `agents/categories/` directory. Their installation numbers are stable; future roles receive new numbers rather than reusing existing ones.
+- **The AGENTS.md gate** is the always-on trigger. It adds a short advisory block to your Codex `AGENTS.md` that tells Codex to check for a subagent-worthy task before starting any non-trivial work.
+- **`SKILL.md`** is the advisor. When the gate determines a suggestion is warranted, the skill does the detailed work: classifies the task shape, selects a lineup of 1–4 roles, determines the work mode, and writes the suggestion message. Then it stops and waits.
 
-| # | Role | GPT-5.6 model | Reasoning effort | What it does |
-|---:|---|---|---|---|
-| 1 | `code-mapper` | `gpt-5.6-terra` | `medium` | Traces code paths, files, symbols, and ownership boundaries |
-| 2 | `search-specialist` | `gpt-5.6-luna` | `medium` | Gathers focused repository or external evidence |
-| 3 | `docs-researcher` | `gpt-5.6-luna` | `high` | Verifies official APIs, versions, and documented guarantees |
-| 4 | `knowledge-synthesizer` | `gpt-5.6-luna` | `high` | Reconciles long or conflicting findings without inventing facts |
-| 5 | `task-distributor` | `gpt-5.6-sol` | `medium` | Splits broad goals into bounded work packages |
-| 6 | `reviewer` | `gpt-5.6-sol` | `medium` | Reviews correctness, regressions, contracts, and maintainability |
-| 7 | `security-auditor` | `gpt-5.6-sol` | `high` | Audits trust boundaries, auth, secrets, and agent-tool safety |
-| 8 | `test-engineer` | `gpt-5.6-luna` | `high` | Designs minimal test coverage for behavior and risk |
-| 9 | `test-automator` | `gpt-5.6-terra` | `xhigh` | Adds bounded regression tests after behavior is clear |
-| 10 | `web-performance-auditor` | `gpt-5.6-luna` | `high` | Audits Web performance evidence and Core Web Vitals risks |
+Think of them as gatekeeper and advisor: the gate decides whether to escalate; the skill decides what to recommend.
 
-The recommended installation set is roles `1,3,6,7,8,9`. The agent-friendly installer offers this set, all roles, or any custom selection and warns before overwriting selected same-name files.
+```
+User sends task
+      │
+      ▼
+AGENTS.md gate checks task
+      │
+      ├── task is simple / single-lane / opted out
+      │         │
+      │         ▼
+      │     stay silent → Codex continues normally
+      │
+      └── task has independent lanes
+                │
+                ▼
+          cast-subagents skill
+                │
+                ▼
+          classify task shape
+          select lineup (1–4 roles)
+          choose work mode
+          write suggestion message
+                │
+                ▼
+          STOP — wait for approval
+                │
+      ┌─────────┴──────────┐
+      │                    │
+   declined             approved
+      │                    │
+      ▼                    ▼
+  continue in         delegate with
+  main thread         handoff schema
+```
 
-The skill selects capabilities first, then maps them to the roles that are actually available in your Codex environment. If a preferred role is missing, the skill says so explicitly rather than silently substituting.
+### The Suggestion Contract
 
-Specialist roles are not decorative. cast-subagents adds them only when the task contains a concrete independent security, test, performance, or release-risk signal.
+Every suggestion covers four things in order: why the task could benefit from subagents, the exact lineup with a reason per role, the work mode, and a permission question matched to the risk of the work. The output is conversational rather than templated — the same four pieces, different wording each time.
 
-### Common lineups
+Hard constraints: exactly one lineup, no more than four roles, no task content before approval, no implication that delegation has already started. The suggestion always ends with a question.
 
-| Task shape | Recommended lineup | Work mode |
-|---|---|---|
-| General PR review | `reviewer + code-mapper` | `read-only` |
-| Security-sensitive review | `security-auditor + code-mapper + reviewer` | `read-only` |
-| Test coverage analysis | `test-engineer + code-mapper` | `read-only` |
-| Targeted regression tests | `test-engineer + test-automator + code-mapper` | `mixed` |
-| Web performance audit | `web-performance-auditor + code-mapper` | `read-only` |
-| Pre-ship quality gate | `reviewer + security-auditor + test-engineer + code-mapper` | `read-only` |
-| Codepath plus docs/API verification | `code-mapper + docs-researcher` | `read-only` |
-| Option research and tradeoff synthesis | `search-specialist + knowledge-synthesizer` | `read-only` |
+### After Approval
 
-Specialist examples:
+Once you approve, each agent gets a structured handoff that includes the goal, success criteria, scope boundaries, relevant file paths, write policy, and a verifiable deliverable. Here's what a typical handoff looks like:
 
-| Task shape | Recommended lineup | Work mode |
-|---|---|---|
-| Auth / permission / token flow review | `security-auditor + code-mapper` | `read-only` |
-| LLM / agent tool safety review | `security-auditor + code-mapper + docs-researcher` | `read-only` |
-| Web performance audit with supplied metrics | `web-performance-auditor` | `read-only` |
-| Targeted regression tests | `test-engineer + test-automator + code-mapper` | `mixed` |
+```text
+delegation_context: delegated-subagent; parent approval already completed; do not invoke cast-subagents or request another delegation approval; execute this handoff only
+goal: Map the affected code path for the settings save failure.
+success_criteria: Identify the real execution path, likely failure boundary,
+  and the files that own the behavior.
+scope_in: settings modal, client mutation, API route, response handling
+scope_out: unrelated settings pages, styling, copy updates
+relevant_paths: src/settings/, app/api/settings/, useSettingsForm
+constraints: read-only; no code edits; cite concrete files and symbols
+deliverable: concise summary with file references and one likely root cause
+verification: parent can trace the same path from your references
+write_policy: read-only
+open_questions: whether retries or optimistic updates affect the failure mode
+```
 
-The cap is four roles. If a task seems to need more, cast-subagents either compresses the lineup or stays silent rather than padding it out.
-
-These role names are compatible with VoltAgent/awesome-codex-subagents and similar community Codex subagent collections. If you use a custom role set, you can adapt `references/role-lineups.md` to add your own task shape mappings.
-
-## 🔄 Work Modes
-
-**`read-only`** — agents inspect, trace, and report. No files are written. This is the default for review, mapping, research, and verification tasks, and what cast-subagents defaults to when in doubt. Most suggestions use this mode.
-
-**`mixed`** — agents start with a read-only pass and pause before any writes. The skill confirms the exploration phase is complete before handing off to a write-capable agent. When you see `mixed` in a suggestion, it means: "we'll dig in first, and I'll check with you before anything changes."
-
-**`write-capable`** — agents may edit files within their assigned scope. cast-subagents uses this only for explicitly write-capable work. Test-writing tasks normally start as `mixed`: `test-engineer` and `code-mapper` clarify the behavior first, then `test-automator` writes targeted tests only when the scope is clear.
-
-The mode is always stated using one of these three exact labels — you won't see a suggestion without knowing which one applies.
+No agent infers scope from context — everything is explicit. The full schema is in `references/handoff-schema.md`.
 
 ## ❓ FAQ
 
