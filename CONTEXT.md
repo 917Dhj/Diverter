@@ -73,6 +73,14 @@ _Avoid_: Lineup orchestrator, worker daemon
 The Root Session's inspection of the visible `spawn_agent` interface. Native Subagent Backend is selected only when the required selectors are exposed; otherwise CLI Worker Backend is selected without relying on the parent model name.
 _Avoid_: Sol check, version check
 
+**Native Proactive Delegation**:
+A Codex session policy that explicitly permits the Root Session to create subagents without a separate user request. When active, Cast Subagents is ineligible even when explicitly invoked; without that explicit policy signal, Cast remains eligible.
+_Avoid_: Ultra check, Sol check
+
+**Orchestration Ownership**:
+The rule that exactly one mechanism may coordinate subagent creation for a Root Session. Native Proactive Delegation owns orchestration whenever it is active; otherwise Cast Subagents may advise after user approval.
+_Avoid_: Backend preference, delegation priority
+
 **Advisory Gate**:
 The Root Session checkpoint that decides whether a task merits a subagent recommendation before task work begins. It never starts subagents and always waits for user approval.
 _Avoid_: Automatic spawning, delegation engine

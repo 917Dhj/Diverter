@@ -79,6 +79,22 @@ class PluginContractTest(unittest.TestCase):
         self.assertIn("scripts/run-cli-agent.py", skill)
         self.assertIn("delegation_context: delegated-subagent", skill)
 
+    def test_bundled_skill_silently_defers_to_native_proactive_delegation(self) -> None:
+        skill = (ROOT / "skills" / "cast-subagents" / "SKILL.md").read_text()
+
+        start = skill.index("<NATIVE-PROACTIVE-DELEGATION-STOP>")
+        end = skill.index("</NATIVE-PROACTIVE-DELEGATION-STOP>")
+        stop = skill[start:end]
+
+        self.assertLess(start, skill.index("<SUBAGENT-STOP>"))
+        self.assertIn("higher-priority session instructions", stop)
+        self.assertIn("proactive multi-agent delegation is active", stop)
+        self.assertIn("even when explicitly invoked", stop)
+        self.assertIn("Do not mention Cast Subagents", stop)
+        self.assertIn("Continue the current task under the native policy", stop)
+        self.assertNotIn("gpt-5.6-sol", stop)
+        self.assertNotIn("Ultra", stop)
+
     def test_bundled_skill_resolves_cli_runner_from_its_file_path(self) -> None:
         skill_path = ROOT / "skills" / "cast-subagents" / "SKILL.md"
         skill = skill_path.read_text()
@@ -121,6 +137,15 @@ class PluginContractTest(unittest.TestCase):
             self.assertNotIn("AGENTS.md gate", readme, readme_name)
 
         self.assertFalse((ROOT / "scripts" / "install-agents-gate.py").exists())
+
+    def test_readmes_explain_native_proactive_delegation_boundary(self) -> None:
+        english = (ROOT / "README.md").read_text()
+        chinese = (ROOT / "README.zh.md").read_text()
+
+        self.assertIn("native proactive delegation", english.lower())
+        self.assertIn("silently steps aside", english.lower())
+        self.assertIn("原生主动委派", chinese)
+        self.assertIn("静默让路", chinese)
 
 
 if __name__ == "__main__":

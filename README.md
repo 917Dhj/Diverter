@@ -1,7 +1,7 @@
 <h1 align="center">Cast-Subagents</h1>
 
 <p align="center">
-  <b>Codex stays quiet about subagents until you ask. Cast-Subagents speaks up first.</b>
+  <b>Codex usually waits for you to ask. Cast-Subagents speaks up unless native proactive delegation is already active.</b>
 </p>
 <p align="center">
   <a href="README.md">English</a> | <a href="README.zh.md">简体中文</a>
@@ -21,7 +21,7 @@
 <p align="center">
   <img src="assets/cast-subagents-hero.png" alt="Cast Subagents hero banner">
 </p>
-That silence has a cost. Every time a task splits cleanly across multiple lanes — a multi-axis PR review, a codepath-plus-docs verification, an option research with parallel threads — Codex stays in the main thread by default. The user has to notice the opportunity, decide which roles to spawn, and phrase the request clearly enough that Codex follows through. Cast-Subagents handles that recognition step: it spots the task shapes that benefit from delegation and surfaces a lineup suggestion before work begins.
+Outside sessions with native proactive delegation, that silence has a cost. Every time a task splits cleanly across multiple lanes — a multi-axis PR review, a codepath-plus-docs verification, an option research with parallel threads — Codex stays in the main thread by default. The user has to notice the opportunity, decide which roles to spawn, and phrase the request clearly enough that Codex follows through. Cast-Subagents handles that recognition step: it spots the task shapes that benefit from delegation and surfaces a lineup suggestion before work begins.
 
 It now recommends specialist lineups for code mapping, review, docs verification, security auditing, test strategy, targeted test automation, Web performance, and pre-ship quality gates.
 
@@ -33,9 +33,9 @@ cast-subagents identifies the task shape, names the lineup and work mode, asks o
 
 ## 🤔 Why cast-subagents
 
-OpenAI's own Codex documentation states: *"Codex doesn't spawn subagents automatically, and it should only use subagents when you explicitly ask for subagents or parallel agent work."*
+Current Codex behavior has two paths: at most intelligence levels, delegation still requires an explicit request; with Ultra, native proactive delegation can start suitable parallel work automatically. See OpenAI's [subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents).
 
-That sentence describes a real gap. For every multi-lane task that would benefit from delegation, you have to manually decide whether to split it, which roles to pick, and how to phrase the spawn request clearly. As context grows longer, the main agent tends to absorb everything itself rather than handing work off. cast-subagents closes that gap by front-loading the analysis — but it hands the spawn decision back to you every time.
+cast-subagents fills the first path's gap by front-loading the analysis while handing the spawn decision back to you. When higher-priority session policy enables native proactive delegation, cast-subagents silently steps aside — even when explicitly invoked — so native orchestration remains the sole owner.
 
 Some other delegation tools go all the way to automatic spawning after the analysis. cast-subagents stops at the suggestion. That's a deliberate design choice:
 
@@ -200,7 +200,7 @@ The Chinese examples above are included intentionally. cast-subagents matches th
 cast-subagents has three parts that work in sequence:
 
 - **The `SessionStart` Hook** activates a short advisory gate for the root session. It is restored after startup, resume, clear, and compaction without modifying instruction files.
-- **The skill** is the advisor. When the gate determines a suggestion is warranted, it classifies the task shape, selects a lineup of 1–4 roles, determines the work mode, and writes the suggestion message. Then it stops and waits.
+- **The skill** is the advisor. It first yields silently when higher-priority session policy enables native proactive delegation. Otherwise, when a suggestion is warranted, it classifies the task shape, selects a lineup of 1–4 roles, determines the work mode, and writes the suggestion message. Then it stops and waits.
 - **The execution backend** runs approved handoffs. Codex uses native custom agents when the spawn interface exposes role and model controls; otherwise it uses temporary `codex exec` workers that preserve each role's model, effort, sandbox, instructions, and live Web Search.
 
 CLI workers are leaf agents: multi-agent features are disabled, so they cannot delegate again.
@@ -210,6 +210,11 @@ User sends task
       │
       ▼
 SessionStart Hook activates advisory gate
+      │
+      ├── native proactive delegation is active
+      │         │
+      │         ▼
+      │     silently step aside → native policy continues
       │
       ├── task is simple / single-lane / opted out
       │         │
@@ -271,6 +276,10 @@ No agent infers scope from context — everything is explicit. The full schema i
 **Why doesn't it just spawn subagents automatically?**
 
 That's a deliberate design choice, not a limitation. Subagents multiply token consumption, and the right call varies by task. An approval step lets you weigh that cost each time rather than committing to it unconditionally. Other tools in this space make spawning automatic; cast-subagents treats your approval as a required step.
+
+**What happens when Codex enables native proactive delegation?**
+
+cast-subagents silently steps aside, even when explicitly invoked. It does not suggest a lineup, request approval, or start an execution backend; the native policy owns orchestration for that task.
 
 **Will it slow Codex down on simple tasks?**
 
