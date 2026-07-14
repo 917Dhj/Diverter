@@ -30,7 +30,7 @@ class PluginContractTest(unittest.TestCase):
         self.assertEqual(entry[0]["source"]["source"], "url")
         self.assertEqual(
             entry[0]["source"]["url"],
-            "https://github.com/917Dhj/diverter.git",
+            "https://github.com/917Dhj/Diverter.git",
         )
         self.assertEqual(entry[0]["source"]["ref"], "main")
         self.assertEqual(entry[0]["policy"]["installation"], "AVAILABLE")
@@ -110,7 +110,7 @@ class PluginContractTest(unittest.TestCase):
     def test_install_guide_has_one_plugin_only_flow(self) -> None:
         guide = (ROOT / ".codex" / "INSTALL.md").read_text()
 
-        self.assertIn("codex plugin marketplace add 917Dhj/diverter", guide)
+        self.assertIn("codex plugin marketplace add 917Dhj/Diverter", guide)
         self.assertIn("codex plugin add diverter@diverter", guide)
         self.assertIn("DIVERTER_PLUGIN", guide)
         self.assertIn("/hooks", guide)

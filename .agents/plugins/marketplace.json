@@ -8,7 +8,7 @@
       "name": "diverter",
       "source": {
         "source": "url",
-        "url": "https://github.com/917Dhj/diverter.git",
+        "url": "https://github.com/917Dhj/Diverter.git",
         "ref": "main"
       },
       "policy": {

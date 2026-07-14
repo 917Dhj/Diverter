@@ -6,8 +6,8 @@
     "name": "917Dhj",
     "url": "https://github.com/917Dhj"
   },
-  "homepage": "https://github.com/917Dhj/diverter",
-  "repository": "https://github.com/917Dhj/diverter",
+  "homepage": "https://github.com/917Dhj/Diverter",
+  "repository": "https://github.com/917Dhj/Diverter",
   "license": "MIT",
   "keywords": [
     "codex",
@@ -27,7 +27,7 @@
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/917Dhj/diverter",
+    "websiteURL": "https://github.com/917Dhj/Diverter",
     "defaultPrompt": [
       "Check whether this task should use a specialist subagent lineup."
     ]

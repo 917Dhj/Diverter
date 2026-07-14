@@ -12,9 +12,9 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://github.com/openai/codex"><img src="https://img.shields.io/badge/OpenAI-Codex-000000?labelColor=555555" alt="OpenAI Codex"></a>
-  <a href="https://github.com/917Dhj/diverter/stargazers"><img src="https://img.shields.io/github/stars/917Dhj/diverter?style=flat" alt="GitHub Stars"></a>
-  <a href="https://github.com/917Dhj/diverter"><img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status: Active"></a>
-  <a href="https://github.com/917Dhj/diverter"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="https://github.com/917Dhj/Diverter/stargazers"><img src="https://img.shields.io/github/stars/917Dhj/Diverter?style=flat" alt="GitHub Stars"></a>
+  <a href="https://github.com/917Dhj/Diverter"><img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status: Active"></a>
+  <a href="https://github.com/917Dhj/Diverter"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome"></a>
   <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python 3.11+">
 </p>
 
@@ -58,7 +58,7 @@ Three reasons this matters in practice:
 Tell Codex:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/917Dhj/diverter/refs/heads/main/.codex/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/917Dhj/Diverter/refs/heads/main/.codex/INSTALL.md
 ```
 
 The installation guide is the only supported entry point. Codex adds the repository marketplace, installs `diverter@diverter`, shows the complete GPT-5.6 role table, installs your selected roles globally, and then asks you to trust the `SessionStart` Hook. You never need to run the Role Installer yourself. Start a new task after installation.
