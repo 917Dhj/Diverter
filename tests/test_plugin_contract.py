@@ -79,6 +79,16 @@ class PluginContractTest(unittest.TestCase):
         self.assertIn("scripts/run-cli-agent.py", skill)
         self.assertIn("delegation_context: delegated-subagent", skill)
 
+    def test_bundled_skill_resolves_cli_runner_from_its_file_path(self) -> None:
+        skill_path = ROOT / "skills" / "cast-subagents" / "SKILL.md"
+        skill = skill_path.read_text()
+        plugin_root = skill_path.parents[2]
+
+        self.assertTrue((plugin_root / ".codex-plugin" / "plugin.json").is_file())
+        self.assertTrue((plugin_root / "scripts" / "run-cli-agent.py").is_file())
+        self.assertIn("plugin_root = Path(skill_file).parents[2]", skill)
+        self.assertIn("${plugin_root}/scripts/run-cli-agent.py", skill)
+
     def test_install_guide_has_one_plugin_only_flow(self) -> None:
         guide = (ROOT / ".codex" / "INSTALL.md").read_text()
 
