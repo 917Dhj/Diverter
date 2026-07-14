@@ -5,9 +5,6 @@
 <h1 align="center">Diverter</h1>
 
 <p align="center">
-  <img src="assets/diverter-hero-tagline.png" alt="One task in. The right subagents out." width="560">
-</p>
-<p align="center">
   <a href="README.md">English</a> | <a href="README.zh.md">简体中文</a>
 </p>
 
@@ -19,6 +16,10 @@
   <a href="https://github.com/917Dhj/diverter"><img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status: Active"></a>
   <a href="https://github.com/917Dhj/diverter"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome"></a>
   <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python 3.11+">
+</p>
+
+<p align="center">
+  <img src="assets/diverter-hero-tagline.png" alt="One task in. The right subagents out." width="560">
 </p>
 
 Outside sessions with native proactive delegation, that silence has a cost. Every time a task splits cleanly across multiple lanes — a multi-axis PR review, a codepath-plus-docs verification, an option research with parallel threads — Codex stays in the main thread by default. The user has to notice the opportunity, decide which roles to spawn, and phrase the request clearly enough that Codex follows through. Diverter handles that recognition step: it spots the task shapes that benefit from delegation and surfaces a lineup suggestion before work begins.
