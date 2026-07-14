@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="assets/diverter-hero-figure.png" alt="Diverter 子代理阵容" width="720">
+</p>
+
 <h1 align="center">Diverter</h1>
 
 <p align="center">
-    <b>一个任务进入，正确的子代理出发</b>
+  <img src="assets/diverter-hero-tagline.png" alt="One task in. The right subagents out." width="560">
 </p>
 <p align="center">
   <a href="README.md">English</a> | <a href="README.zh.md">简体中文</a>
@@ -15,10 +19,6 @@
   <a href="https://github.com/917Dhj/diverter"><img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status: Active"></a>
   <a href="https://github.com/917Dhj/diverter"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome"></a>
   <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python 3.11+">
-</p>
-
-<p align="center">
-  <img src="assets/diverter-hero.png" alt="Diverter 主图">
 </p>
 在未启用原生主动委派的会话中，这种沉默是有代价的。每当一个任务天然地可以拆成多条独立线索——多维度的 PR 审查、代码路径加文档验证、有多条并行线程的选项调研——Codex 默认只会待在主线程里。你得自己察觉这个机会，自己决定派哪些角色，还得把委托请求写得足够清楚，Codex 才会执行。Diverter 做的就是这第一步识别：它发现那些适合委托的任务形态，在工作开始之前把阵容建议摆到你面前。
 
