@@ -11,9 +11,9 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://github.com/openai/codex"><img src="https://img.shields.io/badge/OpenAI-Codex-000000?labelColor=555555" alt="OpenAI Codex"></a>
-  <a href="https://github.com/917Dhj/Diverter/stargazers"><img src="https://img.shields.io/github/stars/917Dhj/Diverter?style=flat" alt="GitHub Stars"></a>
-  <a href="https://github.com/917Dhj/Diverter"><img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status: Active"></a>
-  <a href="https://github.com/917Dhj/Diverter"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="https://github.com/GML-MMGroup/Diverter/stargazers"><img src="https://img.shields.io/github/stars/GML-MMGroup/Diverter?style=flat" alt="GitHub Stars"></a>
+  <a href="https://github.com/GML-MMGroup/Diverter"><img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status: Active"></a>
+  <a href="https://github.com/GML-MMGroup/Diverter"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome"></a>
   <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python 3.11+">
 </p>
 
@@ -57,7 +57,7 @@ Diverter knows when to stay focused, when to split the work, which specialists t
 1. Tell Codex:
 
    ```text
-   Fetch and follow instructions from https://raw.githubusercontent.com/917Dhj/Diverter/refs/heads/main/.codex/INSTALL.md
+   Fetch and follow instructions from https://raw.githubusercontent.com/GML-MMGroup/Diverter/refs/heads/main/.codex/INSTALL.md
    ```
 
 2. After installation, open `/hooks`, review and trust Diverter's `SessionStart` Hook, then start or reopen a task.

@@ -6,8 +6,8 @@
     "name": "917Dhj",
     "url": "https://github.com/917Dhj"
   },
-  "homepage": "https://github.com/917Dhj/Diverter",
-  "repository": "https://github.com/917Dhj/Diverter",
+  "homepage": "https://github.com/GML-MMGroup/Diverter",
+  "repository": "https://github.com/GML-MMGroup/Diverter",
   "license": "MIT",
   "keywords": [
     "codex",
@@ -20,14 +20,14 @@
     "displayName": "Diverter",
     "shortDescription": "Route complex work to one specialist lineup",
     "longDescription": "Selects a specialist subagent lineup for suitable Codex tasks, then asks for approval or dispatches automatically under the user's delegation policy.",
-    "developerName": "917Dhj",
+    "developerName": "GML-MMGroup",
     "category": "Productivity",
     "capabilities": [
       "Interactive",
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/917Dhj/Diverter",
+    "websiteURL": "https://github.com/GML-MMGroup/Diverter",
     "defaultPrompt": [
       "Route this task to a specialist subagent lineup when useful."
     ]

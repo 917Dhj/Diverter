@@ -14,7 +14,7 @@ This file is the only supported installation entry. Follow it as one agent-led f
 ### 1. Add the repository marketplace
 
 ```bash
-codex plugin marketplace add 917Dhj/Diverter
+codex plugin marketplace add GML-MMGroup/Diverter
 ```
 
 ### 2. Install the plugin

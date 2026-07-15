@@ -11,9 +11,9 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://github.com/openai/codex"><img src="https://img.shields.io/badge/OpenAI-Codex-000000?labelColor=555555" alt="OpenAI Codex"></a>
-  <a href="https://github.com/917Dhj/Diverter/stargazers"><img src="https://img.shields.io/github/stars/917Dhj/Diverter?style=flat" alt="GitHub Stars"></a>
-  <a href="https://github.com/917Dhj/Diverter"><img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status: Active"></a>
-  <a href="https://github.com/917Dhj/Diverter"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="https://github.com/GML-MMGroup/Diverter/stargazers"><img src="https://img.shields.io/github/stars/GML-MMGroup/Diverter?style=flat" alt="GitHub Stars"></a>
+  <a href="https://github.com/GML-MMGroup/Diverter"><img src="https://img.shields.io/badge/Status-Active-brightgreen.svg" alt="Status: Active"></a>
+  <a href="https://github.com/GML-MMGroup/Diverter"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome"></a>
   <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python 3.11+">
 </p>
 
@@ -57,7 +57,7 @@ Diverter 只在任务值得分派时，为 Codex 选择有边界的专业阵容�
 1. 告诉 Codex：
 
    ```text
-   请获取并按照这个安装说明执行：https://raw.githubusercontent.com/917Dhj/Diverter/refs/heads/main/.codex/INSTALL.md
+   请获取并按照这个安装说明执行：https://raw.githubusercontent.com/GML-MMGroup/Diverter/refs/heads/main/.codex/INSTALL.md
    ```
 
 2. 安装完成后打开 `/hooks`，检查并信任 Diverter 的 `SessionStart` Hook，然后新建或重新打开任务。
