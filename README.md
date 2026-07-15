@@ -70,10 +70,24 @@ Diverter knows when to stay focused, when to split the work, which specialists t
    $diverter-mode ask
    ```
 
-| Policy | Behavior |
-|---|---|
-| `ask` | Proposes one lineup and waits for approval before dispatching |
-| `auto` | Announces one lineup and dispatches it immediately for any Work Mode |
+<table align="center">
+  <thead>
+    <tr>
+      <th align="center">Policy</th>
+      <th align="center">Behavior</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center"><code>ask</code></td>
+      <td>Proposes one lineup and waits for approval before dispatching</td>
+    </tr>
+    <tr>
+      <td align="center"><code>auto</code></td>
+      <td>Announces one lineup and dispatches it immediately for any Work Mode</td>
+    </tr>
+  </tbody>
+</table>
 
 Policy changes apply at the next `SessionStart`; restarting or reopening the task is the predictable way to apply one. `auto` changes dispatch authorization, not Codex permissions, sandboxing, or handoff write boundaries.
 
