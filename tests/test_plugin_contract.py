@@ -179,6 +179,11 @@ class PluginContractTest(unittest.TestCase):
         self.assertIn("model", skill)
         self.assertIn("reasoning_effort", skill)
         self.assertIn("scripts/run-cli-agent.py", skill)
+        self.assertIn("command-level approval", skill)
+        self.assertIn("command-level runtime approval is governed below", skill)
+        self.assertIn("attempt to write a readonly database", skill)
+        self.assertIn("retry the same runner command once", skill)
+        self.assertIn("do not switch the CLI Worker to full access", skill)
         self.assertIn("delegation_context: delegated-subagent", skill)
 
     def test_bundled_skill_silently_defers_to_native_proactive_delegation(self) -> None:

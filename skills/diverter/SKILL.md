@@ -254,7 +254,7 @@ Once Dispatch Authorization is granted:
 - summarize results back in the main thread instead of dumping raw logs
 - retain successful results when one lane fails
 - identify failed roles and let the Root Session cover their lanes when possible
-- never weaken sandbox, permission, role, or multi-agent safety flags to retry a failed lane
+- never weaken the worker's sandbox, approval, role, or multi-agent safety flags to retry a failed lane; command-level runtime approval is governed below
 
 ### Select the Execution Backend
 
@@ -264,6 +264,12 @@ Perform a Backend Capability Check against the visible `spawn_agent` interface a
 - If any required selector is hidden, use the CLI Worker Backend. Do not treat `task_name` as an agent selector and do not use a generic native child when the role settings cannot be guaranteed.
 
 For each selected CLI role, let `skill_file` be the fully expanded absolute path to this `SKILL.md`, compute `plugin_root = Path(skill_file).parents[2]`, verify `${plugin_root}/.codex-plugin/plugin.json` exists, and invoke `${plugin_root}/scripts/run-cli-agent.py` once. Do not derive the path from a catalog alias such as `r3`, a cache version, or the Skill directory itself. Pass the role name, the Root Session workspace with `-C`, and each required additional writable or readable directory with `--add-dir`. Send the complete delegated handoff on stdin and use the runner's stdout as that role's result. A non-zero exit and stderr are a visible worker failure; do not retry by removing the multi-agent disable flags or using an unqualified backend.
+
+CLI Worker runtime approval:
+- when the outer sandbox cannot write Codex runtime state under `${CODEX_HOME:-$HOME/.codex}`, request command-level approval for the exact runner command before launching it
+- keep the same runner command, the role's `sandbox_mode`, `-a never`, and the multi-agent disable flags after approval
+- if an unapproved first attempt fails with `attempt to write a readonly database`, request approval and retry the same runner command once
+- if approval is denied or the approved retry fails, report the worker failure; do not switch the CLI Worker to full access or silently use a generic native child
 
 The Root Session owns orchestration for both backends. Read-only roles may run concurrently. Write-capable roles run serially unless their write scopes are clearly disjoint. Mixed work completes its read-only phase before any write-capable role starts.
 
