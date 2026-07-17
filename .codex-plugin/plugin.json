@@ -30,6 +30,8 @@
     "websiteURL": "https://github.com/GML-MMGroup/Diverter",
     "defaultPrompt": [
       "Route this task to a specialist subagent lineup when useful."
-    ]
+    ],
+    "composerIcon": "./assets/diverter-icon.png",
+    "logo": "./assets/diverter-icon.png"
   }
 }
