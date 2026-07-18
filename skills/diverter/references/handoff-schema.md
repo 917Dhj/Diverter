@@ -42,18 +42,18 @@ Default spawn shape:
 
 ```text
 agent_type: docs-researcher
-fork_context: false
+fork_turns: "none"
 prompt: <structured handoff with delegation_context>
 ```
 
 Avoid combining role-specific spawning with full-history fork:
 
 ```text
-bad: agent_type: docs-researcher + fork_context: true
-good: agent_type: docs-researcher + delegation_context + structured handoff
+bad: agent_type: docs-researcher + fork_turns: "all"
+good: agent_type: docs-researcher + fork_turns: "none" + delegation_context + structured handoff
 ```
 
-Use `fork_context` only when exact conversation history matters more than role specialization. In that case, do not specify `agent_type`; the child inherits the parent agent type.
+Use `fork_turns: "all"` only when exact conversation history matters more than role specialization. In that case, do not specify `agent_type`; the child inherits the parent agent type.
 
 Write-policy meanings:
 

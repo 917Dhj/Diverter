@@ -186,6 +186,23 @@ class PluginContractTest(unittest.TestCase):
         self.assertIn("do not switch the CLI Worker to full access", skill)
         self.assertIn("delegation_context: delegated-subagent", skill)
 
+    def test_native_role_spawn_uses_no_history_or_model_overrides(self) -> None:
+        skill = (ROOT / "skills" / "diverter" / "SKILL.md").read_text()
+        handoff_schema = (
+            ROOT / "skills" / "diverter" / "references" / "handoff-schema.md"
+        ).read_text()
+        spawn_policy = skill.split("Spawn call policy:", 1)[1].split(
+            "Every handoff", 1
+        )[0]
+
+        self.assertIn("`agent_type`", spawn_policy)
+        self.assertIn('`fork_turns: "none"`', spawn_policy)
+        self.assertNotIn("fork_context", spawn_policy)
+        self.assertNotIn("`model`", spawn_policy)
+        self.assertNotIn("`reasoning_effort`", spawn_policy)
+        self.assertIn('fork_turns: "none"', handoff_schema)
+        self.assertNotIn("fork_context", handoff_schema)
+
     def test_bundled_skill_silently_defers_to_native_proactive_delegation(self) -> None:
         skill = (ROOT / "skills" / "diverter" / "SKILL.md").read_text()
 

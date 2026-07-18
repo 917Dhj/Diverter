@@ -274,11 +274,11 @@ CLI Worker runtime approval:
 The Root Session owns orchestration for both backends. Read-only roles may run concurrently. Write-capable roles run serially unless their write scopes are clearly disjoint. Mixed work completes its read-only phase before any write-capable role starts.
 
 Spawn call policy:
-- for the Native Subagent Backend, default to role-specific spawning: specify the target `agent_type`, do not set `fork_context`, and pass a self-contained handoff as the child prompt
+- for the Native Subagent Backend, default to role-specific spawning: specify the target `agent_type`, set `fork_turns: "none"`, and pass a self-contained handoff as the child prompt
 - treat the handoff as the context carrier; do not rely on inherited chat history for task-critical context
-- use `fork_context` only when exact conversation history matters more than role specialization
-- when using `fork_context`, do not specify `agent_type`; accept that the child inherits the parent agent type
-- if a spawn attempt fails because `fork_context` and `agent_type` were combined, retry once with the same `agent_type`, no `fork_context`, and the self-contained handoff
+- use `fork_turns: "all"` only when exact conversation history matters more than role specialization
+- when using `fork_turns: "all"`, do not specify `agent_type`; accept that the child inherits the parent agent type
+- if a spawn attempt fails because `fork_turns: "all"` and `agent_type` were combined, retry once with the same `agent_type`, `fork_turns: "none"`, and the self-contained handoff
 
 Every handoff should include:
 - `delegation_context`
