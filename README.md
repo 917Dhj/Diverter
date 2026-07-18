@@ -54,6 +54,8 @@ Diverter knows when to stay focused, when to split the work, which specialists t
 
 ## 🚀 Quick Start
 
+**Codex CLI `0.145.0-alpha.20` or later is recommended for the full native subagent experience.**
+
 1. Tell Codex:
 
    ```text
